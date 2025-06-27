@@ -1,0 +1,16 @@
+| ค่าเดิม (Text) | ตัวเลข (Number) |
+| -------------- | --------------- |
+ไม่รับค่า          =            0 
+| Lying Down นอน    | 1              
+| Sitting     นั่ง   | 2               |
+| Standing     ยื่น  | 3               |
+| ล้ม                | 4 |
+
+| BP Status (Text) | BP Status (Number) |
+| ---------------- | ------------------ |
+| Low              | 0                  |
+| Normal           | 1                  |
+| Elevated         | 2                  |
+| High             | 3                  |
+ 
+
