@@ -1,7 +1,8 @@
-const pg = require('pg');
+const { Pool } = require('pg');
 require('dotenv').config();
+
 // คอนฟิกการเชื่อมต่อ postgresql ภายในเครือข่าย LAN
-    // const db = new pg.Client({
+    // const pool = new pg.Client({
     //     host: '192.168.1.76',
     //     user: 'admin',
     //     database: 'hospital',
@@ -13,21 +14,22 @@ require('dotenv').config();
     // })
 
 // เชื่อมต่อฐานข้อมูล  DDNS
-const db = new pg.Client({
+const pool = new Pool({
   host: 'smartg.trueddns.com',
   port: 29454,
   user: 'admin',
   database: 'hospital',
   password: 'admin1234',
-  connectionString: process.env.PG_URI,
-  idleTimeoutMillis: 10000, // ป้องกัน idle connection
+  max: 10,
+  idleTimeoutMillis: 10000,
 });
 
-db.connect()
-// ป้องกัน server ล่มถ้า DB มีปัญหา
-db.on('error', err => {
-  console.error('PostgreSQL client error:', err.message);
-  // ยังไม่ throw error ต่อ เพื่อกัน server ตาย
+pool.on('connect', () => {
+  console.log('✅ Connected to PostgreSQL');
 });
 
-module.exports = db 
+pool.on('error', (err) => {
+  console.error('🔥 PostgreSQL Pool error:', err.message);
+});
+
+module.exports = pool;

@@ -21,10 +21,19 @@ const hospitals = async (req, res) => {
   }
 }
 const generateHN = async () => {
-  const result = await db.query('SELECT COUNT(*) FROM patients');
-  const count = parseInt(result.rows[0].count, 10) + 1; 
-  return 'hn' + count.toString().padStart(3, '0'); // เช่น hn001, hn002
+  const result = await db.query("SELECT hn FROM patients ORDER BY hn DESC LIMIT 1");
+
+  if (result.rows.length === 0) {
+    return 'hn001'; // ถ้ายังไม่มีข้อมูลเลย
+  }
+
+  const lastHN = result.rows[0].hn; // เช่น hn007
+  const lastNumber = parseInt(lastHN.replace('hn', ''), 10); // เอาแค่ตัวเลข 007 → 7
+  const nextNumber = lastNumber + 1;
+
+  return 'hn' + nextNumber.toString().padStart(3, '0'); // เช่น hn008
 };
+
 // Function to register a new patient
 const registerPat = async (req, res) => {
   const {
@@ -65,6 +74,7 @@ const registerPat = async (req, res) => {
     res.status(500).json({ message: 'Failed to register patient' });
   }
 };
+
 // Function to get patient by HN
 const getPatientByHN = async (req, res) => {
   const { hn } = req.params;
@@ -85,6 +95,7 @@ const getPatientByHN = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch patient' });
   }
 };
+
   // Function to get all patients
 const getAllPatients = async (req, res) => {
     try {
