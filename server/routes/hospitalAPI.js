@@ -31,5 +31,10 @@ router.put('/appointments/:id', hospitalController.updateAppointments); // PUT /
 router.delete('/appointments/:id', hospitalController.deleteAppointments); // DELETE /api/hospital/appointments/:id
  // PUT /api/hospital/appointments/:id
 //router.get('/someRoute' ,verifyToken,hospitalController.someRoute); // ตัวอย่างเส้นทางเพิ่มเติม
+router.post('/emergencycontacts', hospitalController.createEmergencyContact); // POST /api/hospital/emergencycontacts
+router.get('/emergencycontacts', hospitalController.getAllEmergencyContacts); // GET /api/hospital/emergencycontacts
+router.get('/emergencycontacts/:hn', hospitalController.getEmergencyContactsByHN); // GET /api/hospital/emergencycontacts/:hn
+router.put('/emergencycontacts/:id', hospitalController.updateEmergencyContact); // PUT /api/hospital/emergencycontacts/:id
+router.delete('/emergencycontacts/:id', hospitalController.deleteEmergencyContact); // DELETE /api/hospital/emergencycontacts/:id
  
 module.exports = router;

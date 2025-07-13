@@ -5,119 +5,89 @@ import { toast } from 'react-toastify';
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-  const API = import.meta.env.VITE_API_BASE_URL;
-
+  // State สำหรับข้อมูลผู้ใช้
   const [user, setUser] = useState({
     isLoggedIn: false,
     role: '',
     email: '',
+    name: '',
+    id: null
   });
 
-  const [tokenExpired, setTokenExpired] = useState(false);
-  const [showExtendSession, setShowExtendSession] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // ฟังก์ชันบันทึกข้อมูลผู้ใช้
+  const saveUserData = (userData) => {
+    try {
+      localStorage.setItem('userData', JSON.stringify(userData));
+      setUser(userData);
+    } catch (error) {
+      console.error('Error saving user data:', error);
+    }
+  };
+
+  // ฟังก์ชันโหลดข้อมูลจาก localStorage
+  const loadUserData = () => {
+    try {
+      const savedUserData = localStorage.getItem('userData');
+      if (savedUserData) {
+        const userData = JSON.parse(savedUserData);
+        setUser(userData);
+        return true;
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      localStorage.removeItem('userData');
+    }
+    return false;
+  };
+
+  // ฟังก์ชันออกจากระบบ
+  const logout = () => {
+    try {
+      localStorage.removeItem('userData');
+      localStorage.removeItem('token');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+    
+    setUser({
+      isLoggedIn: false,
+      role: '',
+      email: '',
+      name: '',
+      id: null
+    });
+    
+    toast.info('ออกจากระบบแล้ว');
+  };
+
+  // โหลดข้อมูลเมื่อแอพเริ่มต้น
+  useEffect(() => {
+    loadUserData();
+    
+    // ตั้ง loading เป็น false หลังจากตรวจสอบเสร็จ
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500); // รอสักครู่ให้โหลดข้อมูลเสร็จ
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // ตั้งค่า axios
   useEffect(() => {
     axios.defaults.withCredentials = true;
   }, []);
 
-  // ตรวจสอบว่า token ใช้งานได้ไหม
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await axios.get(`${API}/auth/verifyToken`);
-        const userData = res.data.user;
-        setUser({
-          isLoggedIn: true,
-          email: userData.email,
-          role: userData.role,
-        });
-      } catch (err) {
-        if (err.response?.data?.message === 'TokenExpired') {
-          logout(); // หมดอายุแล้ว ออกทันที
-        }
-      }
-    };
-
-    checkAuth();
-  }, [API]);
-
-  // ตรวจสอบ token ใกล้หมดอายุ (ทุก 30 วินาที)
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const res = await axios.get(`${API}/auth/token-exp`);
-        const expireTime = res.data.exp * 1000;
-        const now = Date.now();
-        const remaining = expireTime - now;
-
-        if (remaining <= 0) {
-          toast.error('หมดเวลาใช้งาน');
-          logout();
-        } else if (remaining < 2 * 60 * 1000) {
-          setShowExtendSession(true); // ใกล้หมด
-        } else {
-          setShowExtendSession(false);
-        }
-      } catch (err) {
-        console.error('เช็ค token หมดอายุล้มเหลว:', err);
-      }
-    }, 30000); // ทุก 30 วิ
-
-    return () => clearInterval(interval);
-  }, [API]);
-
-  // ออกจากระบบ
-  const logout = async () => {
-    try {
-      await axios.post(`${API}/auth/logout`);
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
-    setUser({ isLoggedIn: false, email: '', role: '' });
-    setTokenExpired(false);
-    setShowExtendSession(false);
-    window.location.href = '/login';
-  };
-
-  // ต่ออายุ session
-  const extendSession = async () => {
-    try {
-      await axios.post(`${API}/auth/refresh-token`);
-      toast.success('ต่ออายุเรียบร้อยแล้ว');
-      setShowExtendSession(false);
-    } catch (err) {
-      toast.error('ต่ออายุไม่สำเร็จ');
-      logout();
-    }
-  };
-
   return (
-    <UserContext.Provider value={{ user, setUser, logout }}>
+    <UserContext.Provider value={{
+      user,
+      setUser,
+      saveUserData,
+      logout,
+      isLoading
+    }}>
       {children}
-
-      {/* Popup: ใกล้หมดอายุ */}
-      {showExtendSession && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
-          <div className="bg-white rounded-lg p-6 shadow-lg max-w-sm w-full text-center">
-            <h2 className="text-xl font-bold text-yellow-600 mb-4">เซสชันใกล้หมดอายุ</h2>
-            <p className="mb-4">คุณต้องการต่ออายุการใช้งานหรือไม่?</p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={extendSession}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-              >
-                ต่ออายุ
-              </button>
-              <button
-                onClick={logout}
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              >
-                ออกจากระบบ
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </UserContext.Provider>
   );
 };

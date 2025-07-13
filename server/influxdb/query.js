@@ -65,12 +65,11 @@ async function fetchSensorHospitalLatest() {
                             sequence: obj.sequence,
                             timestamp,
                             bp_status : obj.bp_status,
-                            diastolic: obj.diastolic,
+                            BatteryPercent: obj.BatteryPercent,
                             emi: obj.emi,
                             heart_rate: obj.heart_rate,
                             posture : obj.posture,
                             sequence: obj.sequence,
-                            systolic: obj.systolic,
                             temperature: obj.temperature,
                         };
                     });
@@ -130,11 +129,10 @@ async function fetchSensorHospital() {
                             sequence: obj.sequence,
                             timestamp,
                             bp_status: obj.bp_status,
-                            diastolic: obj.diastolic,
+                            BatteryPercent: obj.BatteryPercent,
                             emi: obj.emi,
                             heart_rate: obj.heart_rate,
                             posture: obj.posture,
-                            systolic: obj.systolic,
                             temperature: obj.temperature,
                         };
                     });

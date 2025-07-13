@@ -20,8 +20,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import RegisterPatient from './components/RegisterPatient';
-import DataPat from './components/DataPat';
-import Contact from './components/Contact';
+import DataPat from './components/DataPatients/DataPat';
 
 import Showdata from './components/DashBoad/Showdata';
 import DashBoard from './components/DashBoad/DashBoard';
@@ -51,12 +50,12 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/registerPat" element={<RegisterPatient />} />
         <Route path="/dataPat" element={<DataPat />} />
+        <Route path="/dashboard" element={<DashBoard />} />
       </Route>
 
       {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/contact" element={<Contact />} />
 
       {/* Dashboard Routes */}
       <Route
@@ -107,7 +106,7 @@ function AppContent() {
         toastClassName="rounded-lg shadow-lg"
         bodyStyle={{
           fontSize: '16px',
-          fontFamily: 'Sukhumvit Set, sans-serif',
+          fontFamily: 'Kanit',
         }}
       />
     </div>
@@ -129,11 +128,11 @@ function App() {
   if (!isLoaded) return <LoadingScreen />;
 
   return (
-    <Router>
-      <UserProvider>
+    <UserProvider>
+      <Router>
         <AppContent />
-      </UserProvider>
-    </Router>
+      </Router>
+    </UserProvider>
   );
 }
 

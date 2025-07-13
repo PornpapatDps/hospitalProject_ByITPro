@@ -50,6 +50,7 @@
     "react-router-dom": "^7.5.3",
     "react-select": "^5.10.1",
     "react-toastify": "^11.0.5",
+    "recharts": "^3.1.0",
     "swiper": "^11.2.6",
     "vis-timeline": "^7.7.4",
     "xlsx": "^0.18.5"

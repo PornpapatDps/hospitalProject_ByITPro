@@ -30,7 +30,7 @@ const register = async (req, res) => {
     );
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // ใช้ secure cookie ใน production
+      secure: false,
       sameSite: 'Lax',
       maxAge: 1 * 60 * 60 * 1000 // 1 ชม.
     });
@@ -41,7 +41,6 @@ const register = async (req, res) => {
     });
     
   }catch (error) {
-    console.log('Error in register:', error);
     res.status(500).json({
       message: 'Error registering user',
       error: error.message
@@ -75,14 +74,14 @@ const login = async (req, res) => {
     const token = jwt.sign(
       { userId: user.user_id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '5m' }
     );
     // ส่ง token กลับไปยัง client
     res.cookie('token', token, {
       httpOnly: true, 
-      secure: process.env.NODE_ENV === 'production', // ใช้ secure cookie ใน production
+      secure: false,
       sameSite: 'Lax',
-      maxAge: 1 * 60 * 60 * 1000  // 1 ชม.
+      maxAge: 5 * 60 * 1000  // 5 นาที
     });
 
     res.json({
@@ -92,14 +91,12 @@ const login = async (req, res) => {
     });
 
   } catch (error) {
-    console.log('Error in login:', error);
     res.status(500).json({
       message: 'Error logging in',
       error: error.message
     });
   }
 }
-// Get all users
 const users = async (req, res) => {
   try {
     const token = req.cookies.token;
@@ -108,7 +105,6 @@ const users = async (req, res) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('decoded user:', decoded);
 
     const results = await pg.query(`SELECT * FROM users`);
     res.json({
@@ -116,19 +112,12 @@ const users = async (req, res) => {
     });
 
   } catch (error) {
-    console.log('Error in users:', error);
     res.status(403).json({
       message: 'Authorization failed',
       error: error.message
     });
   }
 };
-// Logout user
-const logout = async (req, res) => {
-  await res.clearCookie('token');
-  await res.clearCookie('refreshToken');
-  await res.json({ message: 'ออกจากระบบเรียบร้อยแล้ว' });
-};
 
 // EXPORT
-module.exports = { register,login,users,logout };
+module.exports = { register,login,users };
