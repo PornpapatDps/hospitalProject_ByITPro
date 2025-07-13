@@ -1,0 +1,64 @@
+ได้เลยครับ! 🎯 ต่อไปนี้คือ **สรุปขั้นตอนติดตั้ง PostgreSQL 15 + pgAdmin 4 และนำเข้าไฟล์ `.sql` อย่างย่อ:**
+
+---
+
+## 🐘 **ติดตั้ง PostgreSQL 15 + pgAdmin 4 (Windows)**
+
+### ✅ **ขั้นตอนที่ 1: ดาวน์โหลด**
+
+* ไปที่:
+  🔗 [https://www.enterprisedb.com/download-postgresql-binaries](https://www.enterprisedb.com/download-postgresql-binaries)
+  หรือ
+  🔗 [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/)
+* เลือก: PostgreSQL 15 → Windows x86-64 → Download Installer
+
+---
+
+### ✅ **ขั้นตอนที่ 2: ติดตั้ง**
+
+* รันไฟล์ `.exe` ที่ดาวน์โหลดมา
+* ให้ติ๊กติดตั้งครบทั้ง:
+
+  * PostgreSQL Server
+  * pgAdmin 4
+  * StackBuilder
+  * Command Line Tools
+* ตั้งรหัสผ่านสำหรับ user `postgres`
+* ใช้พอร์ต `5432` (ค่าเริ่มต้น)
+* คลิก Next → Install
+
+---
+
+### ✅ **ขั้นตอนที่ 3: เปิดใช้งาน pgAdmin 4**
+
+* ไปที่ Start Menu → เปิด **pgAdmin 4**
+* ใส่รหัสผ่าน `postgres` ที่คุณตั้งไว้
+* โปรแกรมพร้อมใช้งาน!
+
+---
+
+## 🏥 **สร้างฐานข้อมูล hospital**
+
+1. เปิด pgAdmin 4 → คลิก `PostgreSQL 15`
+2. คลิกขวา → **Create** → **Database...**
+3. ตั้งชื่อว่า: `hospital` → กด Save
+
+---
+
+## 📥 **นำเข้าไฟล์ `.sql` ด้วย pgAdmin 4**
+
+### 🔹 ขั้นตอน:
+
+1. เลือกฐานข้อมูล `hospital`
+2. คลิกขวา → เลือก **Query Tool**
+3. กด 📂 **Open File** (หรือกด `Ctrl+O`)
+4. เลือกไฟล์ `.sql` ที่ต้องการนำเข้า
+5. กด ▶️ **Execute/Run** (หรือ `F5`)
+
+> ระบบจะรันคำสั่ง SQL ทั้งหมดในไฟล์ เช่น CREATE TABLE, INSERT, ฯลฯ
+
+---
+
+📌 เสร็จแล้วคุณจะมีฐานข้อมูล `hospital` ที่มีตารางและข้อมูลพร้อมใช้งานครับ!
+
+หากต้องการให้ช่วยตรวจสอบหรือรันไฟล์ `.sql` ให้ลองส่งมาได้เลยนะครับ 😊
